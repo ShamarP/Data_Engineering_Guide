@@ -6,6 +6,8 @@ https://datalemur.com/questions
 
 ###### Histogram of Tweets
 
+https://datalemur.com/questions/sql-histogram-tweets
+
 ```sql
 WITH tweets_per_user AS (
   SELECT 
@@ -24,6 +26,13 @@ FROM tweets_per_user
 GROUP BY num_tweets
 ```
 
+##### Data Science Skills 
 
-
-
+```sql 
+SELECT candidate_id 
+FROM candidates
+WHERE skill IN ('Python', 'Tableau', 'PostgreSQL')
+GROUP BY candidate_id
+HAVING COUNT(*) = 3
+ORDER BY candidate_id ASC
+```
