@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Leetcode.md",
+                "file": "Articles.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Leetcode"
+              "title": "Articles"
             }
           }
         ]
@@ -182,15 +182,16 @@
   },
   "active": "0f9845cd082a7486",
   "lastOpenFiles": [
+    "Data Engineering Practice.md",
+    "Articles.md",
     "The Data Warehouse Toolkit.md",
-    "Practice Problems.md",
     "SQL practice.md",
+    "Leetcode.md",
+    "Practice Problems.md",
     "Books.md",
     "histogram of tweets.md",
-    "Data Engineering Practice.md",
     "Data_Engineering_Guide/README.md",
     "Data_Engineering_Guide",
-    "Untitled.canvas",
-    "Leetcode.md"
+    "Untitled.canvas"
   ]
 }

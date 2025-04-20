@@ -36,3 +36,14 @@ GROUP BY candidate_id
 HAVING COUNT(*) = 3
 ORDER BY candidate_id ASC
 ```
+
+
+###### Page With No Likes
+
+```sql 
+SELECT p.page_id 
+FROM pages AS p 
+LEFT JOIN page_likes AS pl ON p.page_id = pl.page_id
+WHERE liked_date IS NULL
+ORDER BY page_id
+```
