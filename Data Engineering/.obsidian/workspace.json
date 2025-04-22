@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Fundamentals Of Data Engineering.md",
+                "file": "SQL practice.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Fundamentals Of Data Engineering"
+              "title": "SQL practice"
             }
           }
         ]
@@ -182,8 +182,8 @@
   },
   "active": "0f9845cd082a7486",
   "lastOpenFiles": [
-    "Books.md",
     "Fundamentals Of Data Engineering.md",
+    "Books.md",
     "Data Engineering Get Started.md",
     "Practice Problems.md",
     "Leetcode.md",

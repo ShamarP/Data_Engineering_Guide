@@ -28,6 +28,8 @@ GROUP BY num_tweets
 
 ##### Data Science Skills 
 
+https://datalemur.com/questions/matching-skills
+
 ```sql 
 SELECT candidate_id 
 FROM candidates
@@ -40,10 +42,34 @@ ORDER BY candidate_id ASC
 
 ###### Page With No Likes
 
+https://datalemur.com/questions/sql-page-with-no-likes
+
 ```sql 
 SELECT p.page_id 
 FROM pages AS p 
 LEFT JOIN page_likes AS pl ON p.page_id = pl.page_id
 WHERE liked_date IS NULL
 ORDER BY page_id
+```
+
+##### Unfinished Parts
+
+https://datalemur.com/questions/tesla-unfinished-parts
+
+```sql
+SELECT part, assembly_step
+FROM parts_assembly 
+WHERE finish_date IS NULL
+```
+
+
+##### Laptop Vs Mobile Viewership
+
+https://datalemur.com/questions/laptop-mobile-viewership
+
+```sql
+SELECT 
+  COUNT(CASE WHEN device_type = 'laptop' THEN 1 END ) AS laptop_views,
+  COUNT(CASE WHEN device_type IN ('tablet','phone') THEN 1 END) AS mobile_views
+FROM viewership;
 ```
