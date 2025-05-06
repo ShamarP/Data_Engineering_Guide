@@ -73,3 +73,72 @@ SELECT
   COUNT(CASE WHEN device_type IN ('tablet','phone') THEN 1 END) AS mobile_views
 FROM viewership;
 ```
+
+##### Average Post Hiatus
+
+https://datalemur.com/questions/sql-average-post-hiatus-1
+
+```sql
+WITH post_twentyone AS (
+  SELECT user_id
+  FROM posts
+  WHERE EXTRACT(YEAR FROM post_date) = '2021'
+  GROUP BY user_id
+  HAVING COUNT(*) > 1
+)
+
+SELECT p.user_id,
+      EXTRACT (DAYS FROM MAX(p.post_date) - MIN(p.post_date)) AS days_between
+FROM posts AS p 
+INNER JOIN post_twentyone as pt 
+ON p.user_id = pt.user_id 
+GROUP BY p.user_id
+```
+
+CTE was unnecessary but was a good problem to practice. Needed to look up how to grab the day or year from a timestamp.
+
+##### Teams Power Users
+
+https://datalemur.com/questions/teams-power-users
+
+```sql
+SELECT sender_id,
+       COUNT(*) AS message_count
+FROM messages 
+WHERE EXTRACT(YEAR FROM sent_date) = '2022' AND EXTRACT(MONTH FROM sent_date) = '08'
+GROUP BY sender_id
+ORDER BY message_count DESC
+LIMIT 2
+```
+
+##### Duplicate Job Listings
+
+https://datalemur.com/questions/duplicate-job-listings
+
+```sql 
+WITH test AS (
+  SELECT company_id, title, description FROM job_listings
+  GROUP BY company_id, title, description
+  HAVING COUNT(*) > 1
+)
+
+SELECT COUNT(*)
+FROM test
+```
+
+##### Cities With Completed Orders
+
+https://datalemur.com/questions/completed-trades
+
+```sql
+SELECT 
+	city, 
+	COUNT(*) AS total_orders
+FROM trades AS t 
+LEFT JOIN users AS u ON t.user_id = u.user_id 
+WHERE 
+	t.status = 'Completed'
+GROUP BY city 
+ORDER BY COUNT(*) DESC
+LIMIT 3
+```
