@@ -142,3 +142,30 @@ GROUP BY city
 ORDER BY COUNT(*) DESC
 LIMIT 3
 ```
+
+### Average Review Ratings
+
+https://datalemur.com/questions/sql-avg-review-ratings
+
+```sql
+SELECT 
+  EXTRACT(MONTH FROM submit_date) AS mth,
+  product_id AS product,
+  ROUND(AVG(stars),2) AS avg_stars
+
+FROM reviews
+GROUP BY EXTRACT(MONTH FROM submit_date), product_id
+ORDER BY mth
+```
+
+##### Well Paid Employees
+
+https://datalemur.com/questions/sql-well-paid-employees
+
+```sql
+SELECT e.employee_id,
+       e.name
+FROM employee AS e 
+LEFT JOIN employee AS m ON e.manager_id = m.employee_id
+WHERE e.salary > m.salary
+```
