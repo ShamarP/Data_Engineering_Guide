@@ -28,8 +28,25 @@ Logic:
 - This is a two pointer problem so we can start with a point at each end that gives us the largest and smallest values 
 - We then check the sum of each value. If this value is too small then we will need to move the left pointer up by one because we need to increase our current sum and the same logic applies if the value is larger than the target.
 
+##### container with most water
 
+```python 
+class Solution:
+    def maxArea(self, height: List[int]) -> int:
+        area = 0
+        length = len(height)
+        l = 0
+        r = length - 1
 
+        while l < r:
+            curr_area = min(height[l],height[r]) * (r - l)
+            if curr_area > area:
+                area = curr_area
+            if height[l] < height[r]:
+                l += 1
+            else:
+                r -= 1
+            
+        return area
 
-
-
+```

@@ -169,3 +169,16 @@ FROM employee AS e
 LEFT JOIN employee AS m ON e.manager_id = m.employee_id
 WHERE e.salary > m.salary
 ```
+
+
+##### Second Day Confirmation 
+
+https://datalemur.com/questions/second-day-confirmation
+
+```sql
+SELECT e.user_id  
+FROM emails AS e 
+LEFT JOIN texts AS T ON e.email_id = t.email_id 
+WHERE t.signup_action = 'Confirmed' AND EXTRACT (DAYS FROM t.action_date - e.signup_date) = 1
+```
+
