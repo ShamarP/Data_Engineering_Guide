@@ -426,3 +426,41 @@ ORDER BY department_name, salary DESC, r.name
 ```
 
 Notes: Messed up on when to order the data but figured it out after reading the description a few times.
+
+##### Signup Activation Rate
+
+https://datalemur.com/questions/signup-confirmation-rate
+
+
+```sql 
+SELECT
+    ROUND(SUM(CASE WHEN signup_action = 'Confirmed' THEN 1.0 ELSE 0 END
+    ) / COUNT(signup_action),2 )
+
+FROM emails AS e 
+INNER JOIN texts as t ON e.email_id = t.email_id
+
+```
+
+Notes: Fairly simple but messed up on the division part as I forgot that integer division doesn't produce decimals
+
+##### Supercloud Customer
+
+https://datalemur.com/questions/supercloud-customer
+
+```sql
+WITH distinct_products AS (
+  SELECT 
+      cc.customer_id,
+      COUNT(DISTINCT p.product_category) AS dist 
+  FROM customer_contracts AS cc 
+  INNER JOIN products AS p ON cc.product_id = p.product_id
+  GROUP BY cc.customer_id
+)
+
+SELECT customer_id
+FROM distinct_products
+WHERE dist = (SELECT COUNT(DISTINCT product_category) FROM products)
+```
+
+Notes: got the first cte with no tips but couldn't think of how to get the number of distinct categories. I forgot about subqueries for some reason
