@@ -182,3 +182,247 @@ LEFT JOIN texts AS T ON e.email_id = t.email_id
 WHERE t.signup_action = 'Confirmed' AND EXTRACT (DAYS FROM t.action_date - e.signup_date) = 1
 ```
 
+##### IBM db2 Product Analytics
+
+```sql
+WITH TOTALS AS (
+  SELECT
+    e.employee_id,
+    SUM(
+      CASE
+        WHEN EXTRACT(YEAR FROM q.query_starttime + (q.execution_time * INTERVAL '1 second')) = 2023
+         AND EXTRACT(MONTH FROM q.query_starttime + (q.execution_time * INTERVAL '1 second')) BETWEEN 7 AND 9
+        THEN 1
+        ELSE 0
+      END
+    ) AS counts
+  FROM employees AS e
+  LEFT JOIN queries  AS q
+    ON e.employee_id = q.employee_id
+  GROUP BY e.employee_id
+)
+
+SELECT 
+  counts AS unique_queries,
+  COUNT(employee_id) AS employee_count
+FROM TOTALS
+GROUP BY counts
+ORDER BY unique_queries 
+
+```
+
+##### cards issued difference
+
+https://datalemur.com/questions/cards-issued-difference
+
+```sql
+SELECT 
+  card_name,
+  MAX(issued_amount) - MIN(issued_amount) AS difference
+FROM monthly_cards_issued
+GROUP BY card_name
+ORDER BY difference DESC
+```
+
+##### compressed mean
+
+https://datalemur.com/questions/alibaba-compressed-mean
+
+```sql
+SELECT 
+  ROUND(SUM(item_count::DECIMAL * order_occurrences) / SUM(order_occurrences),1) AS mean
+FROM items_per_order
+```
+
+##### pharmacy analytics (part 1)
+
+https://datalemur.com/questions/top-profitable-drugs
+
+```sql 
+SELECT 
+  drug,
+  total_sales - cogs AS total_profit
+FROM pharmacy_sales
+ORDER BY total_profit DESC
+LIMIT 3
+```
+
+##### pharmacy analytics (part 2)
+
+https://datalemur.com/questions/non-profitable-drugs
+
+```sql
+SELECT 
+  manufacturer,
+  COUNT(drug) AS drug_count,
+  SUM(cogs - total_sales) AS total_loss
+FROM pharmacy_sales
+WHERE cogs > total_sales
+GROUP BY manufacturer
+ORDER BY total_loss DESC
+```
+
+##### Pharmacy Analytics (Part 3)
+
+https://datalemur.com/questions/total-drugs-sales
+
+```sql 
+SELECT manufacturer,
+       CONCAT('$', ROUND(SUM(total_sales) / 1000000), ' million')  AS sale
+FROM pharmacy_sales
+GROUP BY manufacturer
+ORDER BY SUM(total_sales) DESC, manufacturer
+```
+
+##### Patient Support Analysis
+
+https://datalemur.com/questions/frequent-callers
+
+```sql
+WITH TECH AS (
+  SELECT 
+    policy_holder_id,
+    COUNT(case_id) AS cases
+  FROM callers
+  GROUP BY policy_holder_id
+)
+
+SELECT 
+  COUNT(*) AS policy_holder_count
+FROM TECH
+WHERE cases >= 3
+```
+
+
+##### Users Third Transaction
+
+https://datalemur.com/questions/sql-third-transaction
+
+```sql
+WITH rownums AS (
+  SELECT user_id,
+         spend,
+         transaction_date,
+         ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY transaction_date ) AS rn
+  FROM transactions
+)
+
+SELECT user_id,
+       spend,
+       transaction_date
+FROM rownums
+WHERE rn = 3
+```
+
+##### Second Highest Salary
+
+https://datalemur.com/questions/sql-second-highest-salary
+
+```sql
+WITH ranked_salaries AS (
+  SELECT employee_id,
+         salary,
+         RANK() OVER (ORDER BY salary DESC) AS rn 
+  FROM employee
+)
+
+SELECT salary
+FROM ranked_salaries
+WHERE rn = 2
+LIMIT 1;
+```
+
+##### Sending Vs Opening Snaps
+
+https://datalemur.com/questions/time-spent-snaps
+
+```sql
+WITH act AS (
+SELECT 
+  ab.age_bucket,
+  SUM(CASE
+          WHEN a.activity_type = 'open' THEN time_spent
+          ELSE 0
+      END
+  ) AS open_time,
+  SUM(CASE
+          WHEN a.activity_type = 'send' THEN time_spent
+          ELSE 0
+      END
+  ) AS send_time
+FROM activities AS a 
+LEFT JOIN age_breakdown AS ab ON a.user_id = ab.user_id
+GROUP BY ab.age_bucket
+)
+
+SELECT 
+    age_bucket,
+    ROUND(send_time / (send_time + open_time ) * 100.0,2) AS send_perc,
+    ROUND(open_time / (send_time + open_time ) * 100.0,2) AS open_perc
+FROM act
+```
+
+##### Highest-Grossing Items
+
+https://datalemur.com/questions/sql-highest-grossing
+
+```sql
+WITH product_spend2 AS (
+  SELECT 
+    category,
+    product,
+    SUM(spend) AS total_spend
+  FROM product_spend
+  WHERE EXTRACT(YEAR FROM transaction_date) = 2022
+  GROUP BY category, product
+),
+
+product_ranking AS (
+  SELECT 
+    category,
+    product,
+    total_spend,
+    RANK() OVER (
+      PARTITION BY CATEGORY 
+      ORDER BY total_spend DESC
+    ) AS ranking
+  FROM product_spend2
+)
+
+SELECT 
+    category,
+    product,
+    total_spend
+FROM product_ranking
+WHERE ranking = 1 OR ranking = 2
+```
+
+Notes: Could have simplified this but I was over complicating it by trying to do a window function to calculate the total sum of a product within category... this led to duplicates which messed up my final solution but chat gpt helped me figure out why it caused duplicates
+
+##### Top Three Salaries
+
+https://datalemur.com/questions/sql-top-three-salaries
+
+```sql
+WITH ranked_salaries AS (
+  SELECT 
+      d.department_name,
+      e.name,
+      e.salary,
+      DENSE_RANK () OVER (PARTITION BY 
+      e.department_id ORDER BY e.salary DESC) AS rank
+  FROM employee AS e 
+  LEFT JOIN department AS d ON e.department_id = d.department_id
+
+)
+
+SELECT 
+    department_name,
+    r.name,
+    salary
+FROM ranked_salaries as r
+WHERE rank <= 3
+ORDER BY department_name, salary DESC, r.name 
+```
+
+Notes: Messed up on when to order the data but figured it out after reading the description a few times.
