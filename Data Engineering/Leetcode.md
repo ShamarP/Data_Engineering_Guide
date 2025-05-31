@@ -50,3 +50,36 @@ class Solution:
         return area
 
 ```
+
+
+### SQL 50 
+
+##### Recyclable and low fat products
+
+```sql
+SELECT product_id
+
+FROM Products
+
+WHERE low_fats = 'Y' AND recyclable = 'Y'
+```
+
+##### Find Customer Referee
+
+input: Table customer with columns id, name and referee_id 
+
+output: Table with all customers that are not referred by referee id 2
+
+thoughts: basic problem that familiarizes you with sql syntax
+
+```sql
+SELECT name
+
+FROM Customer
+
+WHERE referee_id != 2 OR referee_id IS null
+
+-- COALESCE(referee_id,0) != 2
+```
+
+learned that if a row is null it will be dropped when checking so I added that is null case. But a better way would be to coalesce the column with 0 and then compare.
