@@ -66,9 +66,16 @@ WHERE low_fats = 'Y' AND recyclable = 'Y'
 
 ##### Find Customer Referee
 
-input: Table customer with columns id, name and referee_id 
+**input:**
 
-output: Table with all customers that are not referred by referee id 2
+Table customer  
+
+**columns:**
+		1. id
+		2. name
+		3. referee_id
+
+**output:** Table with all customers that are not referred by referee id 2
 
 thoughts: basic problem that familiarizes you with sql syntax
 
@@ -83,3 +90,57 @@ WHERE referee_id != 2 OR referee_id IS null
 ```
 
 learned that if a row is null it will be dropped when checking so I added that is null case. But a better way would be to coalesce the column with 0 and then compare.
+
+##### Big Countries
+
+**input:** 
+
+Table Customer
+
+columns: 
+		1. name
+		2. continent 
+		3. area 
+		4. population
+		5. gdp 
+
+**output:**
+
+A table with name, population and area. Where it is filtered down to all countries that are big. Where big countries have an area of 3000000 $km^2$  or population of 25 million
+
+```sql 
+SELECT name,
+
+population,
+
+area
+
+FROM World
+
+WHERE population >= 25000000 OR area >= 3000000
+```
+
+##### Article Views
+
+**Input:**
+
+Table Views
+
+columns:
+		1. article_id
+		2. author_id
+		3. viewer_id 
+		4. view_date
+
+**Output:** 
+
+a table with the ids of all authors who have viewed their own articles at least once 
+
+```sql 
+SELECT DISTINCT author_id AS id
+
+FROM Views
+
+WHERE author_id = viewer_id
+```
+
